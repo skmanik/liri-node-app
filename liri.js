@@ -32,98 +32,118 @@ var movieParams = "Mr. Nobody";
 
 // stores user arguments
 var userCommand1 = process.argv[2];
-var userCommand2 = process.argv.slice(3);
+var userCommand2 = process.argv.slice(3).join(" ");
 
 // stores colors because we're awesome
 var cyan = "\x1b[36m%s\x1b[0m";
 var yellow = "\x1b[33m%s\x1b[0m";
 
-// ===========================
-// ========= ACTIONS =========
-// ===========================
+// ===============================
+// ========= MAIN ACTION =========
+// ===============================
 
-// if second argument exists, run this
-if (userCommand1) {
+// initializes Liri
+runLiri(userCommand1, userCommand2);
 
-    // when second argument is twitter search
-    if (userCommand1 === "my-tweets") {
+// main liri function
+function runLiri(userCommand1, userCommand2) {
 
-        console.log(cyan, "\nBEEP BOOP. YOU REQUESTED THE LAST 20 TWEETS BY " + twitParams.screen_name + "...\n");
+    // if second argument exists, run this
+    if (userCommand1) {
 
-        renderTweets();
+        // when second argument is twitter search
+        if (userCommand1 === "my-tweets") {
 
-    // when second argument is spotify search
-    } else if (userCommand1 === "spotify-this-song") {
+            console.log(cyan, "\nBEEP BOOP. YOU REQUESTED THE LAST 20 TWEETS BY " + twitParams.screen_name + "...\n");
 
-        // when user doesn't specify a song to search
-        if (process.argv.length < 4) {
+            renderTweets();
 
-            console.log(cyan, "\nBEEP BOOP. YOU DIDN'T REQUEST A SONG, BUT LIRI SEARCHED SOMETHING ANYWAY...\n");
+            // when second argument is spotify search
+        } else if (userCommand1 === "spotify-this-song") {
 
-            searchSpotify(spotParams);
+            // when user doesn't specify a song to search
+            if (!userCommand2) {
 
-        // when user specifies a song to search
-        } else {
+                console.log(cyan, "\nBEEP BOOP. YOU DIDN'T REQUEST A SONG, BUT LIRI SEARCHED SOMETHING ANYWAY...\n");
 
-            console.log(cyan, "\nBEEP BOOP. YOU REQUESTED A SONG...\n");
+                searchSpotify(spotParams);
 
-            var spotParamsNew = {
-                type: "track",
-                query: userCommand2,
-                limit: 1
+                // when user specifies a song to search
+            } else {
+
+                console.log(cyan, "\nBEEP BOOP. YOU REQUESTED A SONG...\n");
+
+                var spotParamsNew = {
+                    type: "track",
+                    query: userCommand2,
+                    limit: 1
+                }
+                searchSpotify(spotParamsNew);
+
             }
-            searchSpotify(spotParamsNew);
+
+            // when second argument is movie search
+        } else if (userCommand1 === "movie-this") {
+
+            if (!userCommand2) {
+
+                console.log(cyan, "\nBEEP BOOP. YOU DIDN'T REQUEST A MOVIE, BUT LIRI SEARCHED SOMETHING ANYWAY...\n");
+
+                searchOMDB(movieParams);
+
+            } else {
+
+                console.log(cyan, "\nBEEP BOOP. YOU REQUESTED A MOVIE...\n");
+
+                var movieParamsNew = userCommand2;
+                searchOMDB(movieParamsNew);
+
+            }
+
+        } else if (userCommand1 === "do-what-it-says") {
+
+            fs.readFile("random.txt", "utf8", function (error, data) {
+
+                if (error) {
+
+                    console.log("Error! " + error);
+
+                }
+
+                var dataArr = data.split(" ");
+                var newCommand1 = dataArr[0];
+                var newCommand2 = dataArr.slice(1).join(" ");
+
+                if (newCommand1 === "do-what-it-says") {
+
+                    console.log(cyan, "\n*FURION VOICE* How DARE you!\n");
+                    return;
+
+                }
+
+                runLiri(newCommand1, newCommand2);
+
+            });
 
         }
 
-    // when second argument is movie search
-    } else if (userCommand1 === "movie-this") {
+        // if second argument doesn't exist, run default info about LIRI
+    } else {
 
-        if (process.argv.length < 4) {
-
-            console.log(cyan, "\nBEEP BOOP. YOU DIDN'T REQUEST A MOVIE, BUT LIRI SEARCHED SOMETHING ANYWAY...\n");
-
-            searchOMDB(movieParams);
-
-        } else {
-
-            console.log(cyan, "\nBEEP BOOP. YOU REQUESTED A MOVIE...\n");
-
-            var movieParamsNew = userCommand2;
-            searchOMDB(movieParamsNew);
-
-        }
-
-    } else if (userCommand1 === "do-what-it-says") {
-
-        fs.readFile("random.txt", "utf8", function(error, data) {
-
-            if (error) {
-        
-                console.log("Error! " + error);
-        
-            }
-            
-            console.log(data);
-        
-        });
+        console.log(cyan, "\nWELCOME TO LIRIBOT.\nLIRIBOT TALKS TO TWITTER AND SPOTIFY SO YOU DON'T HAVE TO.\nSEE THE README FOR A LIST OF COMMANDS.\n");
 
     }
-
-// if second argument doesn't exist, run default info about LIRI
-} else {
-
-    console.log(cyan, "\nWELCOME TO LIRIBOT.\nLIRIBOT TALKS TO TWITTER AND SPOTIFY SO YOU DON'T HAVE TO.\nSEE THE README FOR A LIST OF COMMANDS.\n");
 
 }
 
 // ==========================
-// ==== GLOBAL FUNCTIONS ====
+// ==== LESSER FUNCTIONS ====
 // ==========================
 
+// tweet function
 function renderTweets() {
 
-    client.get("statuses/user_timeline", twitParams, function(error, tweets, response) {
+    client.get("statuses/user_timeline", twitParams, function (error, tweets, response) {
 
         if (!error) {
 
@@ -147,10 +167,11 @@ function renderTweets() {
 
 }
 
+// spotify function
 function searchSpotify(spotParams) {
 
     spotify.search(spotParams)
-        .then(function(response) {
+        .then(function (response) {
 
             console.log("\x1b[33mARTIST(S):\x1b[0m " + response.tracks.items[0].artists[0].name);
             console.log("\x1b[33mTITLE:\x1b[0m " + response.tracks.items[0].name);
@@ -169,7 +190,7 @@ function searchSpotify(spotParams) {
             console.log(cyan, "BEEP BOOP. END OF SONG REQUEST.\n");
 
         })
-        .catch(function(err) {
+        .catch(function (err) {
 
             console.log(cyan, "Error! " + err);
 
@@ -177,11 +198,12 @@ function searchSpotify(spotParams) {
 
 }
 
+// movie function
 function searchOMDB(movieParams) {
 
     var queryUrl = "http://www.omdbapi.com/?t=" + movieParams + "&y=&plot=short&apikey=trilogy";
 
-    request(queryUrl, function(error, response, body) {
+    request(queryUrl, function (error, response, body) {
 
         if (!error && response.statusCode === 200) {
 
