@@ -48,17 +48,17 @@ runLiri(userCommand1, userCommand2);
 // main liri function
 function runLiri(userCommand1, userCommand2) {
 
-    // if second argument exists, run this
+    // if first argument exists, run this
     if (userCommand1) {
 
-        // when second argument is twitter search
+        // when first argument is twitter search
         if (userCommand1 === "my-tweets") {
 
             console.log(cyan, "\nBEEP BOOP. YOU REQUESTED THE LAST 20 TWEETS BY " + twitParams.screen_name + "...\n");
 
             renderTweets();
 
-            // when second argument is spotify search
+            // when first argument is spotify search
         } else if (userCommand1 === "spotify-this-song") {
 
             // when user doesn't specify a song to search
@@ -82,7 +82,7 @@ function runLiri(userCommand1, userCommand2) {
 
             }
 
-            // when second argument is movie search
+            // when first argument is movie search
         } else if (userCommand1 === "movie-this") {
 
             if (!userCommand2) {
@@ -127,7 +127,7 @@ function runLiri(userCommand1, userCommand2) {
 
         }
 
-        // if second argument doesn't exist, run default info about LIRI
+        // if first argument doesn't exist, run default info about LIRI
     } else {
 
         console.log(cyan, "\nWELCOME TO LIRIBOT.\nLIRIBOT TALKS TO TWITTER AND SPOTIFY SO YOU DON'T HAVE TO.\nSEE THE README FOR A LIST OF COMMANDS.\n");
