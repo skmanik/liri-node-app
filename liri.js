@@ -14,48 +14,132 @@ var fs = require("fs");
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
-// builds twitter query
+// builds default twitter query
 var twitParams = {
     screen_name: "smnthnnn",
     count: 20
 }
 
-// user argument
-var userCommand = process.argv[2];
+// builds default spotify query
+var spotParams = {
+    type: "track",
+    query: "Ace of Base The Sign",
+    limit: 1
+}
+
+// stores user arguments
+var userCommand1 = process.argv[2];
+var userCommand2 = process.argv.slice(3);
+
+// allows colors because we're awesome
+var cyan = "\x1b[36m%s\x1b[0m";
+var yellow = "\x1b[33m%s\x1b[0m";
 
 // ===========================
 // ========= ACTIONS =========
 // ===========================
 
-if (userCommand) {
+if (userCommand1) {
 
-    if (userCommand === "my-tweets") {
-        console.log("Ok hombre we'll get your tweets for you.");
-    }
+    if (userCommand1 === "my-tweets") {
 
-}
+        console.log(cyan, "\nBEEP BOOP. YOU REQUESTED THE LAST 20 TWEETS BY " + twitParams.screen_name + "...\n");
 
+        renderTweets();
 
-client.get("statuses/user_timeline", twitParams, function(error, tweets, response) {
+    } else if (userCommand1 === "spotify-this-song") {
 
-    if (!error) {
+        if (process.argv.length < 4) {
 
-        console.log("BEEP BOOP. YOU REQUESTED THE LAST 20 TWEETS BY " + twitParams.screen_name + "... \n")
+            console.log(cyan, "\nBEEP BOOP. YOU DIDN'T REQUEST A SONG, BUT LIRI SEARCHED SOMETHING ANYWAY...\n");
 
-        for (var i = 0; i < tweets.length; i++) {
+            searchSpotify(spotParams);
 
-            var realIndex = tweets.length - i;
-            console.log("Tweet #" + realIndex + ", created on " + tweets[i].created_at + ": \n" + tweets[i].text + "\n");
+        } else {
+
+            console.log(cyan, "\nBEEP BOOP. YOU REQUESTED A SONG...\n");
+
+            var spotParamsNew = {
+                type: "track",
+                query: userCommand2,
+                limit: 1
+
+            }
+
+            searchSpotify(spotParamsNew);
 
         }
 
-        console.log("BEEP BOOP. END OF TWEETS BY " + twitParams.screen_name + ".");
+    } else if (userCommand1 === "")
 
-    } else {
+} else {
 
-        console.log("Error! " + error);
+    console.log(cyan, "\nWELCOME TO LIRIBOT.\nLIRIBOT TALKS TO TWITTER AND SPOTIFY SO YOU DON'T HAVE TO.\nSEE THE README FOR A LIST OF COMMANDS.\n");
 
-    }
+}
 
- });
+// ==========================
+// ==== GLOBAL FUNCTIONS ====
+// ==========================
 
+function renderTweets() {
+
+    client.get("statuses/user_timeline", twitParams, function (error, tweets, response) {
+
+        if (!error) {
+
+            for (var i = 0; i < tweets.length; i++) {
+
+                var realIndex = tweets.length - i;
+                console.log(yellow, "Tweet #" + realIndex + ", created on " + tweets[i].created_at + ":");
+                console.log(tweets[i].text + "\n");
+
+            }
+
+            console.log(cyan, "BEEP BOOP. END OF TWEETS BY " + twitParams.screen_name + ".\n");
+
+        } else {
+
+            console.log(cyan, "Error! " + error);
+
+        }
+
+    });
+
+}
+
+function searchSpotify(spotParams) {
+
+    spotify.search(spotParams)
+        .then(function (response) {
+
+            console.log("ARTIST(S): " + response.tracks.items[0].artists[0].name);
+            console.log("TITLE: " + response.tracks.items[0].name);
+            console.log("ALBUM: " + response.tracks.items[0].album.name);
+
+            if (response.tracks.items[0].preview_url != null) {
+
+                console.log("PREVIEW: " + response.tracks.items[0].preview_url + "\n");
+
+            } else {
+
+                console.log(yellow, "Sorry, no 30 second preview available for this track.\n");
+
+            }
+
+            console.log(cyan, "BEEP BOOP. END OF SONG REQUEST.\n");
+
+        })
+        .catch(function (err) {
+
+            console.log(cyan, "Error! " + err);
+
+        });
+
+}
+
+function searchOMDB() {
+
+
+
+}

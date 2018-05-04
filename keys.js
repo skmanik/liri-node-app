@@ -1,4 +1,4 @@
-console.log("API keys loaded successfully. *Cheer*");
+console.log("\x1b[33m%s\x1b[0m", "API keys loaded successfully. *Cheer*");
 
 exports.twitter = {
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
