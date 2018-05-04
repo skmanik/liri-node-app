@@ -97,6 +97,7 @@ function runLiri(userCommand1, userCommand2) {
                 searchOMDB(movieParamsNew);
 
             }
+            
             // when first argument is 'do what it says'
         } else if (userCommand1 === "do-what-it-says") {
 
