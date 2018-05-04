@@ -61,14 +61,12 @@ function runLiri(userCommand1, userCommand2) {
             // when first argument is spotify search
         } else if (userCommand1 === "spotify-this-song") {
 
-            // when user doesn't specify a song to search
             if (!userCommand2) {
 
                 console.log(cyan, "\nBEEP BOOP. YOU DIDN'T REQUEST A SONG, BUT LIRI SEARCHED SOMETHING ANYWAY...\n");
 
                 searchSpotify(spotParams);
 
-                // when user specifies a song to search
             } else {
 
                 console.log(cyan, "\nBEEP BOOP. YOU REQUESTED A SONG...\n");
@@ -99,7 +97,7 @@ function runLiri(userCommand1, userCommand2) {
                 searchOMDB(movieParamsNew);
 
             }
-
+            // when first argument is 'do what it says'
         } else if (userCommand1 === "do-what-it-says") {
 
             fs.readFile("random.txt", "utf8", function (error, data) {
@@ -120,7 +118,8 @@ function runLiri(userCommand1, userCommand2) {
                     return;
 
                 }
-
+                
+                // runs program again
                 runLiri(newCommand1, newCommand2);
 
             });
