@@ -27,6 +27,9 @@ var spotParams = {
     limit: 1
 }
 
+// builds default OMDB query
+var movieParams = "Mr. Nobody";
+
 // stores user arguments
 var userCommand1 = process.argv[2];
 var userCommand2 = process.argv.slice(3);
@@ -70,7 +73,13 @@ if (userCommand1) {
 
         }
 
-    } else if (userCommand1 === "")
+    } else if (userCommand1 === "movie-this") {
+
+        console.log(cyan, "\nBEEP BOOP. YOU REQUESTED A MOVIE...\n");
+
+        searchOMDB(movieParams);
+
+    }
 
 } else {
 
@@ -84,7 +93,7 @@ if (userCommand1) {
 
 function renderTweets() {
 
-    client.get("statuses/user_timeline", twitParams, function (error, tweets, response) {
+    client.get("statuses/user_timeline", twitParams, function(error, tweets, response) {
 
         if (!error) {
 
@@ -111,7 +120,7 @@ function renderTweets() {
 function searchSpotify(spotParams) {
 
     spotify.search(spotParams)
-        .then(function (response) {
+        .then(function(response) {
 
             console.log("ARTIST(S): " + response.tracks.items[0].artists[0].name);
             console.log("TITLE: " + response.tracks.items[0].name);
@@ -130,7 +139,7 @@ function searchSpotify(spotParams) {
             console.log(cyan, "BEEP BOOP. END OF SONG REQUEST.\n");
 
         })
-        .catch(function (err) {
+        .catch(function(err) {
 
             console.log(cyan, "Error! " + err);
 
@@ -138,8 +147,24 @@ function searchSpotify(spotParams) {
 
 }
 
-function searchOMDB() {
+function searchOMDB(movieParams) {
 
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieParams + "&y=&plot=short&apikey=trilogy";
 
+    request(queryUrl, function(error, response, body) {
+
+        if (!error && response.statusCode === 200) {
+
+            console.log(JSON.parse(body));
+
+            console.log(cyan, "\nBEEP BOOP. END OF MOVIE REQUEST.\n");
+
+        } else {
+
+            console.log(cyan, "Error! " + error);
+
+        }
+
+    });
 
 }
