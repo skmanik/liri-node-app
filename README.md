@@ -1,6 +1,6 @@
 # LIRI-Bot
 
-A little Node application that takes specific commands and returns information from Twitter, Spotify, and OMDB. Make your own `.env` to run this applicaton effectively.
+A little Node application that takes specific commands and returns information from Twitter, Spotify, and OMDB. Make your own `.env` to run this program effectively.
 
 Instructions: Use only the following commands to run LIRI-Bot...
 
