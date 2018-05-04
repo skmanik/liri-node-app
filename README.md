@@ -10,4 +10,4 @@ Instructions: Use only the following commands to run LIRI-Bot...
 
 `node liri.js movie-this EXAMPLE` which, provided you replace EXAMPLE with a valid movie title, returns information from OMDB about that movie (release date, rating, plot, etc).
 
-`node liri.js do-what-this-says` which runs whatever command is written in the `random.txt` file. 
+`node liri.js do-what-it-says` which runs whatever command is written in the `random.txt` file. 
